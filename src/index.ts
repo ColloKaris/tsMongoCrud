@@ -44,14 +44,25 @@ const sampleAccounts = [
   }
 ]
 
+// Query document
+const documentsToFind = {balance: { $gt: 4700}}
+
 // A main function that executes the connectToDatabase function
 const main = async () => {
   try {
     const client = await connectToDatabase();
     if(client) { // type guard
       const accountsCollection = client.db(dbname).collection(collection_name);
-      let result = await accountsCollection.insertMany(sampleAccounts);
-      console.log(result);
+      // INSERTING
+      //let result = await accountsCollection.insertMany(sampleAccounts);
+      
+      // QUERYING
+      let result = accountsCollection.find(documentsToFind);
+      let docCount = await accountsCollection.countDocuments(documentsToFind);
+      console.log(`The doc count is ${docCount}`);
+      for await (const doc of result) {
+        console.log(doc);
+      }
     }
   } catch(err) {
     console.log(`Error connecting to the database: ${err}`);
