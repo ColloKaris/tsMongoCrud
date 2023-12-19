@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { uri } from './atlas_uri.js';
 
 // use MongoClient to initialize a connection with the database
@@ -45,7 +45,15 @@ const sampleAccounts = [
 ]
 
 // Query document
-const documentsToFind = {balance: { $gt: 4700}}
+//const documentsToFind = {balance: { $gt: 4700}}
+
+const documentToUpdate = {_id: new ObjectId('658041c25208c7ff9a5130bd')}
+const documentsToUpdate = {account_type : "checking"}
+//const update = {$inc: {balance: 1000}};
+const update = {$set: {transfers_complete : "TR413308000"}};
+
+const documentToDelete = { _id: new ObjectId('65804035c3a1e8e0dc23d196') }
+const documentsToDelete = { balance: { $lt: 500 }}
 
 // A main function that executes the connectToDatabase function
 const main = async () => {
@@ -57,12 +65,22 @@ const main = async () => {
       //let result = await accountsCollection.insertMany(sampleAccounts);
       
       // QUERYING
-      let result = accountsCollection.find(documentsToFind);
-      let docCount = await accountsCollection.countDocuments(documentsToFind);
-      console.log(`The doc count is ${docCount}`);
-      for await (const doc of result) {
-        console.log(doc);
-      }
+      //let result = accountsCollection.find(documentsToFind);
+      // let docCount = await accountsCollection.countDocuments(documentsToFind);
+      // console.log(`The doc count is ${docCount}`);
+      // for await (const doc of result) {
+      //   console.log(doc);
+      // }
+
+      // UPDATING
+      //let result = await accountsCollection.updateMany(documentsToUpdate, update);
+    
+      //console.log(result)
+
+      // DELETING
+      let result = await accountsCollection.deleteMany(documentsToDelete);
+      console.log(result)
+
     }
   } catch(err) {
     console.log(`Error connecting to the database: ${err}`);
